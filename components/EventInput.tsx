@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { TextInput, View, Text, Pressable, Button } from "react-native";
+import { TextInput, View, Text, Pressable } from "react-native";
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
@@ -8,8 +8,10 @@ import dayjs, { Dayjs } from "dayjs";
 import Select from 'react-select';
 import { GlobalStyles, SelectStyles } from "../styles/global";
 import { Event, useEventContext } from "../context/EventContext";
+import EventDisplay from "./EventDisplay";
+import { Button } from "./ui/Button";
 
-interface EventOption {
+export interface EventOption {
     value: string;
     label: string;
 }
@@ -33,6 +35,13 @@ const EventInput = () => {
             setDesc("")
         }
         return null
+    }
+
+    const clearInput = () => {
+        setName("")
+        setDate(null)
+        setType({value: '', label: ''})
+        setDesc("")
     }
 
     const validateInput = () => {
@@ -65,11 +74,12 @@ const EventInput = () => {
             const UserEvent: Event = {
                 id: eventId.current,
                 name: name,
-                type: type?.label,
+                type: type,
                 date: date,
                 desc: desc
             }
             EventContext.addEvent(UserEvent)
+            clearInput()
         } 
     }
 
@@ -85,19 +95,26 @@ const EventInput = () => {
     ]
 
     return (
-        <View>
+        <View style={GlobalStyles.container}>
             {!isValid.current && errors.map((error) => <Text key={error} style={GlobalStyles.errorText}>{error}</Text>)}
-            <TextInput onChangeText={(name) => setName(name)} placeholder="Name..." style={GlobalStyles.textInput} />
+            <TextInput onChangeText={(name) => setName(name)} placeholder="Name..." value={name} style={GlobalStyles.textInput} />
 
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DemoContainer components={['DatePicker']}>
-                    <DatePicker onChange={(date) => setDate(date)} />
-                </DemoContainer>
-            </LocalizationProvider>
-
-            <Select onChange={(type: EventOption) => setType(type)} options={eventTypes} styles={SelectStyles} />
+            <View style={{ width:'90%', margin: 5 }}>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DemoContainer components={['DatePicker']}>
+                        <DatePicker 
+                            value={date} onChange={(date) => setDate(date)}  
+                        />
+                    </DemoContainer>
+                </LocalizationProvider>
+            </View>
+            
+            <View style={{ width: '90%', margin: 5, zIndex: 100 }}>
+                <Select onChange={(type: EventOption) => setType(type)} placeholder="Type..." options={eventTypes} value={type} styles={SelectStyles} />
+            </View>
             {toggleDesc()}
             <Button title='Add' onPress={handleAddEvent} />
+            <EventDisplay />
         </View>
     );
 }

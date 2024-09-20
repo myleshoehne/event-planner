@@ -8,10 +8,7 @@ import EventDetails from './EventDetails';
 
 export default function Home() {
   return (
-    <View style={GlobalStyles.container}>
-        <EventInput />
-        <EventDisplay />
-    </View>
+      <EventInput />       
   );
 }
 

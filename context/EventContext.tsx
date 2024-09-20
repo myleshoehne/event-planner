@@ -1,6 +1,6 @@
 import { createContext, ReactNode, useContext, useState } from "react"
-import { View } from "react-native";
 import dayjs, { Dayjs } from "dayjs";
+import { EventOption } from "../components/EventInput";
 
 export interface Note {
     id: number,
@@ -10,7 +10,7 @@ export interface Note {
 export interface Event {
     id: number, 
     name: string,
-    type: string, 
+    type: EventOption, 
     date: Dayjs,
     desc?: string,
     notes?: Note[]
@@ -20,9 +20,11 @@ export interface EventContextCatalog {
     events?: Event[],
     addEvent?: (event: Event) => void,
     addNoteToEventById?: (note: Note, eventId: number) => void,
+    deleteEventById?: (eventId: number) => void,
     getEventsList?: () => Event[],
     getEventById?: (id: number) => Event,
     getEventNotesById?: (eventId: number) => Note[],
+    editEvent?: (event: Event) => void,
     children?: ReactNode
 }
 
@@ -60,6 +62,19 @@ const EventContextProvider = ({ children }: EventContextCatalog) => {
         })
     }
 
+    const deleteEventById = (eventId: number) => {
+        const modifiedEvents = events.filter((event: Event) => event.id !== eventId);
+        setEvents(modifiedEvents);
+    }
+
+    const editEvent = (editedEvent: Event) => {
+        setEvents((prevEvents) => {
+            return prevEvents.map((event) => 
+                event.id === editedEvent.id ? {...event, ...editedEvent} : event
+            )
+        })
+    }
+
     const getEventsList = () => {
         return events;
     }
@@ -75,7 +90,7 @@ const EventContextProvider = ({ children }: EventContextCatalog) => {
     }
 
     return (
-        <EventContext.Provider value={{ events, addEvent, getEventsList, getEventById, addNoteToEventById, getEventNotesById }}>
+        <EventContext.Provider value={{ events, addEvent, getEventsList, getEventById, addNoteToEventById, getEventNotesById, deleteEventById, editEvent }}>
             {children}
         </EventContext.Provider>
     )

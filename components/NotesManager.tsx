@@ -1,8 +1,10 @@
 
-import { Button, TextInput, View, Text } from "react-native"
-import { GlobalStyles } from "../styles/global"
+import { TextInput, View, Text } from "react-native"
+import { CardStyles, GlobalStyles } from "../styles/global"
 import { useEffect, useRef, useState } from "react"
 import { Note, Event, useEventContext } from "../context/EventContext"
+import { Button } from "./ui/Button"
+import { ButtonSmall } from "./ui/ButtonSmall"
 
 interface NotesManagerProps {
     event: Event
@@ -50,9 +52,11 @@ export const NotesManager = ({ event }: NotesManagerProps) => {
     return (
         <View>
             {!isValid.current && errors.map((error) => <Text>{error}</Text>)}
-            <TextInput value={note} onChangeText={(note) => setNote(note)} placeholder="Add note..." style={GlobalStyles.textInput} />
-            <Button title='Add' onPress={handleAddNote} />
-            <View>
+            <View style={{flexDirection: 'row', justifyContent: 'center', width: '90%'}}>
+                <TextInput value={note} onChangeText={(note) => setNote(note)} placeholder="Add note..." style={GlobalStyles.textInput} />
+                <ButtonSmall title='Add' onPress={handleAddNote} />
+            </View>
+            <View style={CardStyles.container}>
                 {displayNotes.length > 0 &&
                     displayNotes.map((note) => <Text key={note.id}>{note.text}</Text>)
                 }

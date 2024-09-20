@@ -21,9 +21,8 @@ export const EventCard = ({ event }: EventCardProps) => {
         <View style={CardStyles.box}>
             <Pressable key={event.id} onPress={() => handleEventCardClick(event.id, event.name)}>
                 <Text style={CardStyles.eventName}>{event.name}</Text>
-                <Text style={CardStyles.eventDate}>{event.date.format('DD/MM/YYYY')}</Text>
-                {event.type === 'Other' && <Text style={CardStyles.eventType}>{event.desc}</Text>}
-                {event.type !== 'Other' && <Text style={CardStyles.eventType}>{event.type}</Text>}
+                {event.type.value === 'other' && <Text style={CardStyles.eventDate}>{event.date.format('DD/MM/YYYY')} - {event.desc}</Text>}
+                {event.type.value !== 'other' && <Text style={CardStyles.eventDate}>{event.date.format('DD/MM/YYYY')} - {event.type.label}</Text>}
             </Pressable>
         </View>
     )
